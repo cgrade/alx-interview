@@ -25,4 +25,3 @@ def pascal_triangle(n):
                 innerList.append(outterList[eachRow -1][eachCol - 1] + outterList[eachRow - 1][eachCol])
         outterList.append(innerList)
     return(outterList)
-
