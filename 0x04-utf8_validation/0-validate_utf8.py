@@ -1,3 +1,9 @@
+#!/usr/bin/python3
+"""
+this module contains a func that determines if a given dataset
+represents a valid UTF-8 encoding.
+"""
+
 def validUTF8(data):
     # Helper function to check if a byte is a valid continuation byte
     def is_continuation(byte):
