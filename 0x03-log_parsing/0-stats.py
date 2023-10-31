@@ -1,44 +1,49 @@
 #!/usr/bin/python3
 """
-Log Parsing
+    script that reads stdin line by line and computes metrics
 """
 import sys
 
 
-total_file_size = 0
-status = ['200', '301', '400', '401', '403', '404', '405', '500']
-obj = dict.fromkeys(status, 0)
+def print_msg(codes, file_size):
+    print("File size: {}".format(file_size))
+    for key, val in sorted(codes.items()):
+        if val != 0:
+            print("{}: {}".format(key, val))
 
 
-def printLogStat():
-    """
-    log stats
-    """
-    print("File size: {}".format(total_file_size))
-    for key, value in sorted(obj.items()):
-        if value > 0:
-            print("{}: {}".format(key, value))
+file_size = 0
+code = 0
+count_lines = 0
+codes = {
+    "200": 0,
+    "301": 0,
+    "400": 0,
+    "401": 0,
+    "403": 0,
+    "404": 0,
+    "405": 0,
+    "500": 0
+}
 
+try:
+    for line in sys.stdin:
+        parsed_line = line.split()
+        parsed_line = parsed_line[::-1]
 
-if __name__ == "__main__":
-    count_stat = 0
-    try:
-        for line in sys.stdin:
-            line = line.split()
-            count_stat += 1
-            try:
-                total_file_size += int(line[-1])
+        if len(parsed_line) > 2:
+            count_lines += 1
 
-                if line[-2] in status:
-                    obj[line[-2]] += 1
+            if count_lines <= 10:
+                file_size += int(parsed_line[0])
+                code = parsed_line[1]
 
-            except (IndexError, ValueError):
-                pass
+                if (code in codes.keys()):
+                    codes[code] += 1
 
-            if count_stat % 10 == 0:
-                printLogStat()
-    except KeyboardInterrupt:
-        printLogStat()
-        raise
-    else:
-        printLogStat()
+            if (count_lines == 10):
+                print_msg(codes, file_size)
+                count_lines = 0
+
+finally:
+    print_msg(codes, file_size)
